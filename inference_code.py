@@ -11,10 +11,12 @@ from sys import platform
 class VisualizeImage:
     """draw boxes from annotation file
     """
-    def __init__(self,imagePath,annotationFile,outputPath):
+    def __init__(self,imagePath,annotationFile,outputPath,count):
         self.annotationFile = annotationFile
         self.imagePath = imagePath
         self.outputPath = outputPath
+        self.count = count
+
         self.missingImageCount = 0
 
 
@@ -31,7 +33,12 @@ class VisualizeImage:
         if not isdir(self.outputPath):
                 makedirs(self.outputPath)
         bar = progress_bar(range(1,len(annotations["images"])),desc=colored(text="Process",color="green"),colour="green")
-        annotation_ite = annotations["images"]
+        if self.count != 0 or self.count == None:
+            annotation_ite = annotations["images"][:int(self.count)]
+        else:
+            if self.count == 0:
+                annotation_ite = annotations["images"]
+
         for idx,image in enumerate(annotation_ite):
             count = 0
 
@@ -107,6 +114,6 @@ parser.add_argument("-c", "--count", help = "number of images need to process",r
 
 args = parser.parse_args()
 
-obj=VisualizeImage(annotationFile=args.annotationFilePath,imagePath=args.datasetPath,outputPath=args.outputPath)
+obj=VisualizeImage(annotationFile=args.annotationFilePath,imagePath=args.datasetPath,outputPath=args.outputPath,count=args.count)
 obj.readAnnotations()
 
