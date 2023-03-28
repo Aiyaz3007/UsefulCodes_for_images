@@ -42,5 +42,5 @@ def resize_image_annotations(filename:str,resize:tuple):
 def draw_bbox(filename:str,coordinates:tuple,category:str):
   image_data = cv2.imread(filename)
   cv2.rectangle(image_data,(int(coordinates[0]),int(coordinates[1])),(int(coordinates[2]),int(coordinates[3])),(0,255,0),2)
-  cv2.putText(image_data,category,(coordinates[0],coordinates[1]-10),cv2.FONT_HERSHEY_COMPLEX,2,(0,0,255))
+  cv2.putText(image_data,category,(int(coordinates[0]),int(coordinates[1])-10),cv2.FONT_HERSHEY_COMPLEX,2,(0,0,255))
   return image_data
