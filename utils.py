@@ -27,3 +27,23 @@ def resize_annotations(image_dim:tuple,bbox:list,resize:tuple):
     """
     width_ratio,height_ratio = [resize[idx]/image_dim[idx] for idx in range(len(resize))]
     return [bbox[0]*height_ratio,bbox[1]*width_ratio,bbox[2]*height_ratio,bbox[3]*width_ratio]
+
+
+def annotationsRemove(annotationDict:dict,annotationIds:list):
+    """Annotations Remove
+
+    After Removing Annotations, It will do reorder of all annotation ids to sequence
+
+    Args:
+        annotationDict (dict): pass the annotation dictionary 
+        annotationIds (list): pass the list of annotation ids to remove i.e [1,2,3,4,5]
+
+    Returns:
+        dict: returns the annotation dict with removed annotations
+    """
+    removedannotations = [ann for ann in annotationDict["annotations"] if ann["id"] not in annotationIds]
+    annotations = []
+    for index,ann in enumerate(removedannotations):
+        ann["id"] = index+1
+        annotations.append(ann)
+    return annotations
