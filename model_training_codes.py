@@ -38,11 +38,11 @@ def train_epoch(dataloader,
     
   epoch_progressbar = tqdm(total=epochs,desc=f"epochs : ")
 
-  for epoch in range(epochs):
+  for epoch in range(1,epochs+1):
     epoch_progressbar.update(1)
 
     total_loss,total_loss_dict = one_epoch_train(dataloader,
-                                                  epoch+1,
+                                                  epoch,
                                                   model,
                                                   optimizer,
                                                   device)
