@@ -1,12 +1,17 @@
 # custom training function 
 from tqdm import tqdm_notebook as tqdm
 import numpy as np
+import torch
+from os import makedirs
+from os.path import join
 
 def train_epoch(dataloader,
                 epochs:int,
                 model,
                 optimizer,
-                device):
+                device,
+                save_model:bool=False,
+                save_model_per_epoch:int=5):
   def one_epoch_train(dataloader,
                       epoch:int,
                       model,
@@ -47,4 +52,8 @@ def train_epoch(dataloader,
                                                   optimizer,
                                                   device)
     print(f"epoch: {epoch} | loss: {np.mean(total_loss)}")
-
+    if save_model:
+        modelsPath = "models"
+        makedirs(modelsPath,exist_ok=True)
+        if epoch % save_model_per_epoch == 0:
+            torch.save(model.state_dict(), join(modelsPath,f"model_{str(epoch)}_loss_{np.mean(total_loss):2f}.torch"))
