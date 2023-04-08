@@ -2,9 +2,10 @@ import torch
 import json
 from pycocotools.coco import COCO 
 import os
+import cv2
 
 
-class CustomDataset(Dataset):
+class CustomDataset():
   def __init__(self,annotationFile:str,root_dir:str):
     self.coco = COCO(annotationFile)
     self.root_images = root_dir
