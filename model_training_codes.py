@@ -54,6 +54,7 @@ def train_epoch(dataloader,
             targets = [{k:torch.tensor(v).to(device) for k, v in t.items()} for t in targets]
 
             loss_dict = model(images,targets)
+            model.eval()
             val_loss = sum([loss for loss in loss_dict.values()])
             val_loss_dict = [{k:v.item()} for k,v in loss_dict.items()]
 
