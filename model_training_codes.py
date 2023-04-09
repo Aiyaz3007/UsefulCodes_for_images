@@ -77,7 +77,7 @@ def train_epoch(dataloader,
                                                                   device
                                                                   )
         
-        print(f"epoch: {epoch} | loss: {np.mean(total_train_loss)}")
+        print(f"epoch: {epoch} | loss: {np.mean(total_train_loss)} | val loss: {np.mean(total_val_loss)}")
         if save_model:
             modelsPath = "models"
             makedirs(modelsPath,exist_ok=True)
