@@ -5,7 +5,8 @@ import torch
 from os import makedirs
 from os.path import join
 
-def train_epoch(dataloader,
+def train_epoch(traindataloader,
+                valdataloader,
                 epochs:int,
                 model,
                 optimizer,
@@ -48,18 +49,20 @@ def train_epoch(dataloader,
                              device):
         total_val_loss = []
         total_val_loss_dict = []
-        for batch,(images,targets) in enumerate(dataloader):
-            model.train()
-            images = [torch.tensor(image).to(device) for image in images]
-            targets = [{k:torch.tensor(v).to(device) for k, v in t.items()} for t in targets]
+        one_epoch_bar = tqdm(total=len(dataloader),desc=f"validation ",leave=True)
 
-            loss_dict = model(images,targets)
-            model.eval()
-            val_loss = sum([loss for loss in loss_dict.values()])
-            val_loss_dict = [{k:v.item()} for k,v in loss_dict.items()]
+        with torch.no_grad():
+          for batch,(images,targets) in enumerate(dataloader):
+              images = [torch.tensor(image).to(device) for image in images]
+              targets = [{k:torch.tensor(v).to(device) for k, v in t.items()} for t in targets]
 
-            total_val_loss.append(val_loss)
-            total_val_loss_dict.append(val_loss_dict)
+              loss_dict = model(images,targets)
+              val_loss = sum([loss for loss in loss_dict.values()])
+              val_loss_dict = [{k:v.item()} for k,v in loss_dict.items()]
+
+              total_val_loss.append(val_loss.cpu())
+              total_val_loss_dict.append(val_loss_dict)
+              one_epoch_bar.update(1)
         return total_val_loss,total_val_loss_dict
             
 
@@ -68,12 +71,12 @@ def train_epoch(dataloader,
     for epoch in range(1,epochs+1):
         epoch_progressbar.update(1)
 
-        total_train_loss,total_train_loss_dict = one_epoch_train(dataloader,
+        total_train_loss,total_train_loss_dict = one_epoch_train(traindataloader,
                                                     epoch,
                                                     model,
                                                     optimizer,
                                                     device)
-        total_val_loss,total_val_loss_dict = one_epoch_validation(dataloader,
+        total_val_loss,total_val_loss_dict = one_epoch_validation(valdataloader,
                                                                   model,
                                                                   device
                                                                   )
